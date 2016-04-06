@@ -1,2 +1,2 @@
 # phpstr
-PHP5 String class implementation
+PHP5 utilities
