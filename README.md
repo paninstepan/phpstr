@@ -1,2 +1,2 @@
-# phpstr
+# uphp
 PHP5 utilities
