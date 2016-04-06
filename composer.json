@@ -1,0 +1,21 @@
+{
+    "name": "paninstepan/uphp",
+    "description": "PHP5 utility classes",
+    "license": "MIT",
+    "keywords": ["uphp"],
+    "authors": [
+        {
+            "name": "Panin Stepan",
+            "email": "paninstepan@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "4.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zx\\Uphp\\": "src"
+        }
+    }
+}
