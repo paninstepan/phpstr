@@ -1,12 +1,12 @@
 {
-    "name": "paninstepan/uphp",
+    "name": "zxps/uphp",
     "description": "PHP5 utility classes",
     "license": "MIT",
     "keywords": ["uphp"],
     "authors": [
         {
-            "name": "Panin Stepan",
-            "email": "paninstepan@gmail.com"
+            "name": "Zx Ps",
+            "email": "dev.luis.rubio@gmail.com"
         }
     ],
     "require": {},
