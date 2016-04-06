@@ -61,6 +61,9 @@ class Str implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
 
+    /**
+     * @return Str|Str[]
+     */
     public function explode($str, $part = null)
     {
         if ($part !== null) {
@@ -72,7 +75,9 @@ class Str implements \ArrayAccess, \Countable, \IteratorAggregate
             }
             return $this;
         }
-        return explode($str, $this->s);
+        return array_map(function($s) {
+            return new Str($s);
+        }, explode($str, $this->s));
     }
 
     public function strip()

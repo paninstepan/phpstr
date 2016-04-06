@@ -21,5 +21,19 @@ class StrTest extends PHPUnit_Framework_TestCase {
         }
         $this->assertTrue($test == $str);
     }
+
+    public function testExplode()
+    {
+        $str = new Str('some string for test');
+        $parts = $str->explode(' ');
+        $this->assertEquals(4, count($parts));
+        $this->assertEquals('some', $parts[0]);
+        $this->assertEquals('string', $parts[1]);
+        $this->assertTrue(is_object($parts[0]));
+        $this->assertEquals('some', $str->explode(' ', 0));
+        
+        $str = new Str('another test string');
+        $this->assertEquals('string', $str->explode(' ', 2));
+    }
  
 }
