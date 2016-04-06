@@ -2,7 +2,8 @@
  
 use Zx\Uphp\Str;
  
-class StrTest extends PHPUnit_Framework_TestCase {
+class StrTest extends PHPUnit_Framework_TestCase
+{
  
     public function testStr()
     {
