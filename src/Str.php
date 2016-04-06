@@ -8,8 +8,6 @@ use Traversable;
  * Class Str
  *
  * @see https://github.com/hoaproject/Ustring/blob/master/Ustring.php
- *
- * @package AppBundle\Common
  */
 class Str implements \ArrayAccess, \Countable, \IteratorAggregate
 {
@@ -258,4 +256,8 @@ class Str implements \ArrayAccess, \Countable, \IteratorAggregate
         return new \ArrayIterator(preg_split('#(?<!^)(?!$)#u', $this->s));
     }
 
+    public function equals($s)
+    {
+        return (strcmp($this->s, (string)$s) === 0);
+    }
 }

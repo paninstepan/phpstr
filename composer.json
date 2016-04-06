@@ -14,8 +14,6 @@
         "phpunit/phpunit": "4.0.*"
     },
     "autoload": {
-        "psr-4": {
-            "Zx\\Uphp\\": "src"
-        }
+        "psr-4": { "Zx\\Uphp\\": "src" }
     }
 }
