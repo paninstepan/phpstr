@@ -156,4 +156,50 @@ class StrBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['b', 'c', 'd'], $b->toArray());
         
     }
+
+    public function testConstruct()
+    {
+        $b = new StrBuilder('s');
+        $this->assertEquals(1, $b->len());
+
+        $b = new StrBuilder(['a', 'adfasdf', 'adfasdf', 'asdfasdf']);
+        $this->assertEquals(4, $b->len());
+    }
+
+    public function testLimit()
+    {
+        $b = new StrBuilder(['a', 'b', 'c', 'd', 'e', 'asfasdfasdf']);
+        $b->limit(2);
+        $this->assertEquals('a', $b->first());
+        $this->assertEquals('b', $b->last());
+    }
+
+    public function testMerge()
+    {
+        $b1 = new StrBuilder(['a', 'b', 'c', 'd', 'e', 'asfasdfasdf']);
+        $b2 = new StrBuilder(['a', 'b', 'c', 'd', 'e', 'asfasdfasdf']);
+
+        $b1->merge($b2);
+
+        $this->assertEquals(6, $b1->len());
+    }
+
+    public function testClear()
+    {
+        $b1 = new StrBuilder(['a', 'b', 'c', 'd', 'e', 'asfasdfasdf']);
+        $this->assertEquals(6, $b1->len());
+        $b1->clear();
+        $this->assertEquals(0, $b1->len());
+    }
+
+    public function testUnique()
+    {
+        $b1 = new StrBuilder(['a', 'a', 'a', 'b', 'b', 'b', 'c', 'd', 'e', 'asfasdfasdf']);
+        $this->assertEquals(10, $b1->len());
+        $b1->unique();
+        $this->assertEquals(6, $b1->len());
+    }
+
+
+    
 }

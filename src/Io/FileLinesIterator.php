@@ -3,6 +3,7 @@
 namespace Zx\Uphp\Io;
 
 use Zx\Uphp\Str;
+use Zx\Uphp\StrBuilder;
 
 class FileLinesIterator implements \Iterator
 {
@@ -54,6 +55,14 @@ class FileLinesIterator implements \Iterator
             $result[] = $n->strip();
         }
         return $result;
+    }
+
+    /**
+     * @return StrBuilder
+     */
+    public function toStrBuilder()
+    {
+        return new StrBuilder($this->toArray());
     }
 
     /**

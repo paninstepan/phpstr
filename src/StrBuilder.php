@@ -8,12 +8,19 @@ class StrBuilder
      * @var []
      */
     private $data;
-    
+
+    /**
+     * @param $s mixed|[]|Str  Initial data
+     */
     public function __construct($s = '')
     {
         $this->data = [];
         if ($s) {
-            $this->data[] = $s;
+            if (is_array($s)) {
+                $this->data = $s;
+            } else {
+                $this->data[] = (string) $s;
+            }
         }
     }
 
@@ -96,6 +103,38 @@ class StrBuilder
     public function len()
     {
         return count($this->data);
+    }
+
+    /**
+     * @return StrBuilder
+     */
+    public function limit($limit, $offset = 0)
+    {
+        $this->data = array_slice($this->data, $offset, $limit);
+        return $this;
+    }
+
+    /**
+     * @return StrBuilder
+     */
+    public function merge(StrBuilder $b, $createNew = false)
+    {
+        $o = $this;
+        if ($createNew) {
+            $o = new StrBuilder($this->toArray());
+        }
+        $first = $o->toArray(true);
+        $second = $b->toArray(true);
+        $result = array_merge($first, $second);
+        $result = array_unique($result);
+        $o->clear()->addArray($result);
+        return $o;
+    }
+
+    public function clear()
+    {
+        $this->data = [];
+        return $this;
     }
 
     /**
@@ -183,6 +222,15 @@ class StrBuilder
     /**
      * @return StrBuilder
      */
+    public function unique()
+    {
+        $this->data = array_unique($this->data);
+        return $this;
+    }
+
+    /**
+     * @return StrBuilder
+     */
     public function remove(StrBuilder $toRemove)
     {
         $result = new StrBuilder();
@@ -191,15 +239,24 @@ class StrBuilder
                 $result->add($item);
             }
         }
-        return $result;
+        $this->data = $result->toArray();
+        return $this;
     }
 
     /**
      * @return []
      */
-    public function toArray()
+    public function toArray($asStrings = false)
     {
-        return $this->data;
+        if ($asStrings) {
+            $result = [];
+            foreach($this->data as $s) {
+                $result[] = (string) $s;
+            }
+            return $result;
+        } else {
+            return $this->data;
+        }
     }
 
     /**
