@@ -81,4 +81,79 @@ class StrBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($b2->sort()->equals($b1->sort()));
     }
+
+    public function testRemove()
+    {
+        $b1 = new StrBuilder();
+        $b1->addArray(['a', 'b', 'c']);
+        
+        $b2 = new StrBuilder();
+        $b2->addArray(['b']);
+
+        $c = $b1->remove($b2);
+        $this->assertEquals(['a', 'c'], $c->toArray());
+        
+
+        $b1 = new StrBuilder();
+        $b1->addArray(['a', 'b', 'c', 'd', 'e']);
+        
+        $b2 = new StrBuilder();
+        $b2->addArray(['b', 'e']);
+
+        $c = $b1->remove($b2);
+        $this->assertEquals(['a', 'c', 'd'], $c->toArray());
+        
+    }
+
+    public function testCase()
+    {
+
+        $b = new StrBuilder();
+        $b->addArray(['A', 'B', 'C', 'D']);
+        $b->toLower();
+
+        $this->assertEquals(['a', 'b', 'c', 'd'], $b->toArray());
+        $this->assertNotEquals(['A', 'B', 'C', 'D'],  $b->toArray());
+    }
+
+    public function testMap()
+    {
+        $b = new StrBuilder();
+        $b->addArray(['A', 'B', 'C', 'D']);
+        $b->map(function(Zx\Uphp\Str $str){
+            if ($str->contains('A')) {
+                $str->append('A');
+            }
+            return $str;
+        });
+
+        $this->assertEquals(['AA', 'B', 'C', 'D'], $b->toArray());
+    }
+
+    public function testFilter()
+    {
+        $b = new StrBuilder();
+        $b->addArray(['a', 'b', 'c', 'd', '']);
+        $b->filter();
+        $this->assertEquals(['a', 'b', 'c', 'd'], $b->toArray());
+
+
+        $b = new StrBuilder();
+        $b->addArray(['a', false, 'b', false, 'c', false, 'd', '', null, '               ']);
+        $b->filter();
+        $this->assertEquals(['a', 'b', 'c', 'd'], $b->toArray());
+
+        
+        $b = new StrBuilder();
+        $b->addArray(['a', false, 'b', false, 'c', false, 'd', '', null, '               ']);
+        $b->filter(function (Zx\Uphp\Str $str) {
+            $str->strip();
+            if ($str->isEmpty() || $str->equals('a')) {
+                return false;
+            }
+            return true;
+        });
+        $this->assertEquals(['b', 'c', 'd'], $b->toArray());
+        
+    }
 }

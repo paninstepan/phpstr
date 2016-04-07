@@ -17,6 +17,51 @@ class StrBuilder
         }
     }
 
+    public function map($callback)
+    {
+        $this->data = array_map($callback, $this->data);
+        return $this;
+    }
+
+    public function filter($callback = null)
+    {
+        if ($callback) {
+            $this->data = array_filter($this->data, $callback);
+            $this->data = array_values($this->data);
+        } else {
+            $this->data = array_filter($this->data, function ($str) {
+                if ($str->strip()->isEmpty()) {
+                    return false;
+                }
+                return true;
+            });
+            $this->data = array_values($this->data);
+        }
+        return $this;
+    }
+
+    /**
+     * @return StrBuilder
+     */
+    public function toLower()
+    {
+        foreach($this->data as $k => $v) {
+            $this->data[$k]->toLower();
+        }
+        return $this;
+    }
+
+    /**
+     * @return StrBuilder
+     */
+    public function toUpper()
+    {
+        foreach($this->data as $k => $v) {
+            $this->data[$k]->toUpper();
+        }
+        return $this;
+    }
+
     /**
      * @return Str
      */
@@ -41,6 +86,11 @@ class StrBuilder
             }
         }
         return false;
+    }
+
+    public function isIn(Str $s)
+    {
+        return in_array($s, $this->data);
     }
 
     public function len()
@@ -128,6 +178,20 @@ class StrBuilder
     {
         sort($this->data, SORT_STRING);
         return $this;
+    }
+
+    /**
+     * @return StrBuilder
+     */
+    public function remove(StrBuilder $toRemove)
+    {
+        $result = new StrBuilder();
+        foreach($this->toArray() as $item) {
+            if (!$toRemove->isIn($item)) {
+                $result->add($item);
+            }
+        }
+        return $result;
     }
 
     /**

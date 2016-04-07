@@ -30,9 +30,12 @@ class Str implements \ArrayAccess, \Countable, \IteratorAggregate
 
     public function isEmpty()
     {
-        $s = new Str($this->__toString());
+        $s = new Str($this);
         $s->strip();
-        return ($s->len() <= 1);
+        if ($s->len() > 0) {
+            return false;
+        }
+        return true;
     }
 
     public function contains($val)
