@@ -2,40 +2,38 @@
 
 namespace Zx\Uphp;
 
-class StrBuilder
+class StrBuilder extends ArrList implements \Iterator, \Countable, \ArrayAccess
 {
-    /**
-     * @var []
-     */
-    private $data;
-
     /**
      * @param $s mixed|[]|Str  Initial data
      */
-    public function __construct($s = '')
+    public function __construct($initial = null)
     {
         $this->data = [];
-        if ($s) {
-            if (is_array($s)) {
-                $this->data = $s;
+        if ($initial) {
+            if (is_array($initial)) {
+                $this->data = $initial;
             } else {
-                $this->data[] = (string) $s;
+                $this->data[] = (string) $initial;
             }
         }
     }
 
-    public function map($callback)
+    /**
+     * @param $s mixed
+     * @return ArrList
+     */
+    public function add($v)
     {
-        $this->data = array_map($callback, $this->data);
-        return $this;
+        return parent::add(new Str((string)$v));
     }
 
     public function filter($callback = null)
     {
-        if ($callback) {
-            $this->data = array_filter($this->data, $callback);
-            $this->data = array_values($this->data);
-        } else {
+        if ($callback !== null) {
+            return parent::filter($callback);
+        }
+        if ($callback === null) {
             $this->data = array_filter($this->data, function ($str) {
                 if ($str->strip()->isEmpty()) {
                     return false;
@@ -52,10 +50,9 @@ class StrBuilder
      */
     public function toLower()
     {
-        foreach($this->data as $k => $v) {
-            $this->data[$k]->toLower();
-        }
-        return $this;
+        return $this->map(function (Str $str){
+            return $str->toLower();
+        });
     }
 
     /**
@@ -63,10 +60,9 @@ class StrBuilder
      */
     public function toUpper()
     {
-        foreach($this->data as $k => $v) {
-            $this->data[$k]->toUpper();
-        }
-        return $this;
+        return $this->map(function (Str $str){
+            return $str->toUpper();
+        });
     }
 
     /**
@@ -84,7 +80,10 @@ class StrBuilder
     {
         return new Str(implode($k, $this->data));
     }
-    
+
+    /**
+     * @return boolean
+     */
     public function contains($s)
     {
         foreach($this->data as $str) {
@@ -95,23 +94,12 @@ class StrBuilder
         return false;
     }
 
-    public function isIn(Str $s)
-    {
-        return in_array($s, $this->data);
-    }
-
+    /**
+     * @return integer
+     */
     public function len()
     {
         return count($this->data);
-    }
-
-    /**
-     * @return StrBuilder
-     */
-    public function limit($limit, $offset = 0)
-    {
-        $this->data = array_slice($this->data, $offset, $limit);
-        return $this;
     }
 
     /**
@@ -129,103 +117,6 @@ class StrBuilder
         $result = array_unique($result);
         $o->clear()->addArray($result);
         return $o;
-    }
-
-    public function clear()
-    {
-        $this->data = [];
-        return $this;
-    }
-
-    /**
-     * @param $s Str|string
-     * @return StrBuilder
-     */
-    public function add($s)
-    {
-        $this->data[] = new Str((string)$s);
-        return $this;
-    }
-
-    /**
-     * @param $s Str|string 
-     * @param $cond bool
-     * @return StrBuilder 
-     */
-    public function addIf($s, $cond)
-    {
-        if ($cond) {
-            $this->add($s);
-        }
-        return $this;
-    }
-
-    /**
-     * @param $array []
-     * @return StrBuilder
-     */
-    public function addArray(array $array)
-    {
-        foreach($array as $a) {
-            $this->add($a);
-        }
-        return $this;
-    }
-
-    /**
-     * @return StrBuilder
-     */
-    public function change($k, $value)
-    {
-        if (isset($this->data[$k])) {
-            $this->data[$k] = $value;
-        }
-        return $this;
-    }
-
-    /**
-     * @return Str
-     */
-    public function get($k)
-    {
-        if (isset($this->data[$k])) {
-            return $this->data[$k];
-        }
-        return null;
-    }
-
-    /**
-     * @return Str|null
-     */
-    public function first()
-    {
-        return $this->get(0);
-    }
-
-    /**
-     * @return Str|null
-     */
-    public function last()
-    {
-        return $this->get($this->len() - 1);
-    }
-
-    /**
-     * @return StrBuilder
-     */
-    public function sort()
-    {
-        sort($this->data, SORT_STRING);
-        return $this;
-    }
-
-    /**
-     * @return StrBuilder
-     */
-    public function unique()
-    {
-        $this->data = array_unique($this->data);
-        return $this;
     }
 
     /**
