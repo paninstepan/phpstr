@@ -200,6 +200,39 @@ class StrBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(6, $b1->len());
     }
 
+    public function testSome()
+    {
+        $b1 = new StrBuilder(['a', 'a', 'a', 'b', 'b', 'b', 'c', 'd', 'e', 'asfasdfasdf']);
+        $b2 = clone $b1;
 
+        $this->assertTrue($b2 instanceof StrBuilder);
+        $b2->add('another value');
+        $this->assertNotEquals($b1->len(), $b2->len());
+        $b1->change(0, 'k');
+
+        $this->assertEquals($b2->get(0), 'a');
+
+        
+        $b1 = new StrBuilder(['a a a a', 'a', 'a', 'b', 'b', 'b', 'c', 'd', 'e', 'asfasdfasdf']);
+        $this->assertEquals('a a a a', $b1->get(0));
+        $b1->removeEmpty();
+        $this->assertEquals('aaaa', $b1->get(0));
+
+        $b1 = new StrBuilder(['a', 'b', 'c', 'd']);
+        $b2 = new StrBuilder(['a', 'b', 'c', 'd']);
+
+        $b1->toUpper();
+
+        $this->assertFalse($b1->equals($b2));
+
+        $b2->toUpper();
+        $this->assertTrue($b1->equals($b2));
+
+        $b1->get(0)->toLower();
+        $this->assertFalse($b1->equals($b2));
+
+        $b2->get(0)->toLower();
+        $this->assertTrue($b1->equals($b2));
+    }
     
 }

@@ -1,6 +1,7 @@
 <?php
  
 use Zx\Uphp\Str;
+use Zx\Uphp\StrBuilder;
  
 class StrTest extends PHPUnit_Framework_TestCase
 {
@@ -21,10 +22,7 @@ class StrTest extends PHPUnit_Framework_TestCase
             $test .= $ch;
         }
         $this->assertTrue($test == $str);
-    }
 
-    public function testExplode()
-    {
         $str = new Str('some string for test');
         $parts = $str->explode(' ');
         $this->assertEquals(4, count($parts));
@@ -35,6 +33,45 @@ class StrTest extends PHPUnit_Framework_TestCase
         
         $str = new Str('another test string');
         $this->assertEquals('string', $str->explode(' ', 2));
-    }
+
+        $str = new Str('Any string here');
+
+        $this->assertTrue($str->explode(' ') instanceof StrBuilder);
+        $str->append(' another');
+        $this->assertTrue($str == 'Any string here another');
+        $this->assertTrue($str->contains('any'));
+        $this->assertTrue($str->contains('Any'));
+
+        $this->assertFalse($str->contains('any', true));
+        $this->assertTrue($str->contains('Any', true));
+
+        $str = new Str('Hello');
+        $this->assertEquals(5, $str->len());
+        $this->assertEquals(5, count($str));
+
+        $str1 = new Str('hello');
+        $str2 = new Str('Hello');
+
+        $this->assertFalse($str1->equals($str2));
+        $this->assertTrue($str1->equals($str2, false));
+
+        $str2->append('ooooo');
+        $this->assertFalse($str1->equals($str2, false));
+
+        $str1 = new Str('Проверка');
+        $str2 = new Str('проверка');
+
+        $this->assertFalse($str1->equals($str2));
+        $this->assertTrue($str1->equals($str2, false));
+
+
+        $str1 = new Str('Проверка');
+        $str2 = clone $str1;
+
+        $this->assertTrue($str2 instanceof Str);
+        $this->assertEquals($str1, $str2);
+        $str2->append(' слово');
+        $this->assertNotEquals($str1, $str2);
+     }
  
 }

@@ -38,7 +38,7 @@ class Str implements \ArrayAccess, \Countable, \IteratorAggregate
         return true;
     }
 
-    public function contains($val)
+    public function contains($val, $caseSensitive = false)
     {
         $arr = [];
         if (is_array($val)) {
@@ -49,7 +49,11 @@ class Str implements \ArrayAccess, \Countable, \IteratorAggregate
         $values = array_map(function($v) {
             return preg_quote($v, '/');
         }, $arr);
-        return $this->match('/('.implode('|', $values).')/iu');
+        $modif = 'iu';
+        if ($caseSensitive) {
+            $modif = 'u';
+        }
+        return (bool) $this->match('/('.implode('|', $values).')/' . $modif);
     }
 
     public function append($s)
@@ -78,9 +82,7 @@ class Str implements \ArrayAccess, \Countable, \IteratorAggregate
             }
             return $this;
         }
-        return new StrBuilder(array_map(function($s) {
-            return new Str($s);
-        }, explode($str, $this->s)));
+        return new StrBuilder(explode($str, $this->s));
     }
 
     public function strip()
@@ -264,8 +266,37 @@ class Str implements \ArrayAccess, \Countable, \IteratorAggregate
         return new \ArrayIterator(preg_split('#(?<!^)(?!$)#u', $this->s));
     }
 
-    public function equals($s)
+    /**
+     * String compare
+     *
+     * @return bool
+     */
+    public function equals($s, $caseSensitive = true)
     {
-        return (strcmp($this->s, (string)$s) === 0);
+        if ($caseSensitive) {
+            return (strcmp($this->s, (string) $s) == 0);
+        } else {
+            if ($this->len() != (new Str($s))->len()) {
+                return false;
+            }
+            return $this->contains($s);
+        }
+    }
+
+    /**
+     * @return Str
+     */
+    public function copy()
+    {
+        $class = get_called_class();
+        return new $class($this->s);
+    }
+
+    /**
+     * @return Str
+     */
+    public function __clone()
+    {
+        return $this->copy();
     }
 }

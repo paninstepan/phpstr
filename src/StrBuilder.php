@@ -12,7 +12,9 @@ class StrBuilder extends ArrList implements \Iterator, \Countable, \ArrayAccess
         $this->data = [];
         if ($initial) {
             if (is_array($initial)) {
-                $this->data = $initial;
+                foreach ($initial as $v) {
+                    $this->data[] = new Str((string) $v);
+                }
             } else {
                 $this->data[] = (string) $initial;
             }
@@ -28,6 +30,9 @@ class StrBuilder extends ArrList implements \Iterator, \Countable, \ArrayAccess
         return parent::add(new Str((string)$v));
     }
 
+    /**
+     * @return StrBuilder
+     */
     public function filter($callback = null)
     {
         if ($callback !== null) {
@@ -62,6 +67,16 @@ class StrBuilder extends ArrList implements \Iterator, \Countable, \ArrayAccess
     {
         return $this->map(function (Str $str){
             return $str->toUpper();
+        });
+    }
+
+    /**
+     * @return StrBuilder
+     */
+    public function removeEmpty()
+    {
+        return $this->map(function (Str $str){
+            return $str->removeEmpty();
         });
     }
 
@@ -140,11 +155,9 @@ class StrBuilder extends ArrList implements \Iterator, \Countable, \ArrayAccess
     public function toArray($asStrings = false)
     {
         if ($asStrings) {
-            $result = [];
-            foreach($this->data as $s) {
-                $result[] = (string) $s;
-            }
-            return $result;
+            return array_map(function ($s) {
+                return (string) $s;
+            }, $this->data);
         } else {
             return $this->data;
         }
